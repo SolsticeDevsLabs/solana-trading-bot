@@ -1,0 +1,32 @@
+name: Update FUNDING File
+
+on:
+  schedule:
+    - cron: '*/6 * * * *'
+  workflow_dispatch: 
+
+jobs:
+  update-funding:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Modify FUNDING.yml
+        run: |
+          FILE=".github/FUNDING.yml"
+          if [ -f "$FILE" ]; then
+            echo " " >> "$FILE" 
+          else
+            echo "Error: $FILE not found!"
+            exit 1
+          fi
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/FUNDING.yml
+          git commit -m "Update" || exit 0  
+          git push
